@@ -1,0 +1,56 @@
+{
+  "id": "e963bc10-c4e9-4456-9ef0-0a2524813589",
+  "name": "DRONEHUB Local Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "customerToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "ownerToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "droneId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "flightId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "alertId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
+
