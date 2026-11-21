@@ -1,0 +1,677 @@
+{
+  "info": {
+    "_postman_id": "c8f6154b-d7b3-469b-9801-b8408f6580f1",
+    "name": "DRONEHUB Full-Stack API Collection",
+    "description": "Complete REST API collection for DRONEHUB – Multi-Tenant Drone Rental & Tracking Management System.\nIncludes Authentication (JWT), Fleet Drone Management, and the Drone Booking Management System.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "customerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ownerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "droneId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Customer\",\n  \"email\": \"jane@customer.com\",\n  \"password\": \"CustomerPass123!\",\n  \"phone\": \"+91 9876543210\",\n  \"role\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('customerToken', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@dronehub.com\",\n  \"password\": \"DemoUser123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Shop Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('ownerToken', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@dronehub.com\",\n  \"password\": \"DemoOwner123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Super Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('adminToken', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@dronehub.com\",\n  \"password\": \"DemoAdmin123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Authenticated Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Drone Fleet Management",
+      "item": [
+        {
+          "name": "List Drones (Public & Filterable)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/drones?search=&status=available&page=1&limit=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "drones"],
+              "query": [
+                { "key": "search", "value": "" },
+                { "key": "status", "value": "available" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "12" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Drone (Shop Owner)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.drone) {",
+                  "    pm.collectionVariables.set('droneId', res.data.drone._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"DJI Matrice 350 RTK\",\n  \"model\": \"M350-RTK\",\n  \"brand\": \"DJI\",\n  \"description\": \"Flagship industrial platform with advanced weather-proofing, 55 min flight time, and multi-payload support.\",\n  \"pricePerHour\": 1200,\n  \"pricePerDay\": 8500,\n  \"securityDeposit\": 15000,\n  \"category\": \"Industrial & Thermal\",\n  \"specifications\": {\n    \"maxSpeed\": \"23 m/s\",\n    \"maxFlightTime\": \"55 mins\",\n    \"batteryCapacity\": \"5880 mAh\",\n    \"range\": \"20 km\",\n    \"weight\": \"6.47 kg\",\n    \"camera\": \"Zenmuse H20T Thermal\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "drones"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Drone by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/drones/{{droneId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "drones", "{{droneId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Drone (Shop Owner or Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pricePerHour\": 1400,\n  \"pricePerDay\": 9500,\n  \"status\": \"available\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/drones/{{droneId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "drones", "{{droneId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Drone (Shop Owner or Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/drones/{{droneId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "drones", "{{droneId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Drone Booking Management System",
+      "item": [
+        {
+          "name": "Create Drone Booking (Customer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.booking) {",
+                  "    pm.collectionVariables.set('bookingId', res.data.booking._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"droneId\": \"{{droneId}}\",\n  \"startDate\": \"2026-11-25T09:00:00.000Z\",\n  \"endDate\": \"2026-11-28T18:00:00.000Z\",\n  \"selectedAddons\": [\"addon-battery\", \"addon-lens\"],\n  \"customerInfo\": {\n    \"fullName\": \"Jane Customer\",\n    \"email\": \"jane@customer.com\",\n    \"phone\": \"+91 9876543210\",\n    \"address\": \"42 Indiranagar 100ft Road\",\n    \"city\": \"Bengaluru\",\n    \"state\": \"Karnataka\",\n    \"pinCode\": \"560038\",\n    \"purpose\": \"Commercial Real Estate Cinematography\",\n    \"experience\": \"Expert (50+ hours)\"\n  },\n  \"notes\": \"Requires extra propeller set\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "List Bookings (Scoped by Role)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings?status=&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings"],
+              "query": [
+                { "key": "status", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Booking Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{{bookingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{{bookingId}}"]
+            }
+          }
+        },
+        {
+          "name": "Approve Booking (Shop Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{{bookingId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Dispatch Rental - Mark Active (Shop Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{{bookingId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Complete Rental - Return & Release Drone (Shop Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{{bookingId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Reject Booking Request (Shop Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\",\n  \"rejectionReason\": \"Drone scheduled for mandatory manufacturer firmware service.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{{bookingId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking (Customer or Owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Shoot schedule postponed by client.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{{bookingId}}", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Telemetry & Tracking APIs",
+      "item": [
+        {
+          "name": "Ingest Telemetry Snapshot",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"droneId\": \"{{droneId}}\",\n  \"batteryLevel\": 84,\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"altitude\": 48,\n  \"speed\": 34,\n  \"heading\": 115,\n  \"satellites\": 16,\n  \"signalStrength\": 96,\n  \"telemetrySource\": \"simulated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry"]
+            }
+          }
+        },
+        {
+          "name": "Get Latest Telemetry for Drone",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry/{{droneId}}/latest",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry", "{{droneId}}", "latest"]
+            }
+          }
+        },
+        {
+          "name": "Get Telemetry History for Drone",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry/{{droneId}}?limit=25",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry", "{{droneId}}"],
+              "query": [
+                { "key": "limit", "value": "25" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Step Telemetry Simulator (Tick)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"droneId\": \"{{droneId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry/simulator/tick",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry", "simulator", "tick"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Background Simulator Stream",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"start\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry/simulator/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry", "simulator", "toggle"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Flight Missions & History APIs",
+      "item": [
+        {
+          "name": "Start Flight Mission",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"droneId\": \"{{droneId}}\",\n  \"bookingId\": \"{{bookingId}}\",\n  \"startLocation\": {\n    \"latitude\": 12.9716,\n    \"longitude\": 77.5946,\n    \"address\": \"SkyRent Hub MG Road\"\n  },\n  \"endLocation\": {\n    \"latitude\": 12.9352,\n    \"longitude\": 77.6245,\n    \"address\": \"Koramangala Site\"\n  },\n  \"maxAltitude\": 65,\n  \"maxSpeed\": 42\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/flights",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "flights"]
+            }
+          }
+        },
+        {
+          "name": "List Scoped Flights",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/flights?status=&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "flights"],
+              "query": [
+                { "key": "status", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Flight by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/flights/{{flightId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "flights", "{{flightId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Alert Management APIs",
+      "item": [
+        {
+          "name": "Create Tracking Alert (Emergency/Geofence)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"droneId\": \"{{droneId}}\",\n  \"alertType\": \"emergency\",\n  \"message\": \"Emergency Return-To-Home triggered by operator\",\n  \"severity\": \"critical\",\n  \"location\": {\n    \"latitude\": 12.9716,\n    \"longitude\": 77.5946,\n    \"altitude\": 45\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "List Scoped Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alerts?alertType=&isRead=&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alerts"],
+              "query": [
+                { "key": "alertType", "value": "" },
+                { "key": "isRead", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Alert as Read / Acknowledged",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/alerts/{{alertId}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alerts", "{{alertId}}", "read"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
