@@ -43,13 +43,13 @@ function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-[#0a0e16]/90 backdrop-blur-xl shadow-[0_1px_20px_rgba(0,0,0,0.6)] border-b border-[#3b494b]/40'
-          : 'bg-[#0a0e16]/70 backdrop-blur-md border-b border-[#3b494b]/20'
+          ? 'bg-[#0a0e16]/95 backdrop-blur-xl shadow-[0_2px_30px_rgba(0,0,0,0.8)] border-b border-[#3b494b]/30'
+          : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className="h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="h-16 max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 flex items-center justify-between">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
