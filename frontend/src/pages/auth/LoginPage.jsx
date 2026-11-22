@@ -81,11 +81,10 @@ function LoginPage() {
                 key={role}
                 type="button"
                 onClick={() => setSelectedRole(role)}
-                className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                  selectedRole === role
-                    ? 'bg-[#00f0ff] text-[#002022] shadow-[0_0_16px_rgba(0,240,255,0.3)]'
-                    : 'text-[#849495] hover:text-[#dfe2ee] hover:bg-[#1c2028]'
-                }`}
+                className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${selectedRole === role
+                  ? 'bg-[#00f0ff] text-[#002022] shadow-[0_0_16px_rgba(0,240,255,0.3)]'
+                  : 'text-[#849495] hover:text-[#dfe2ee] hover:bg-[#1c2028]'
+                  }`}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '15px', fontVariationSettings: "'FILL' 1" }}>{icon}</span>
                 <span>{label}</span>
