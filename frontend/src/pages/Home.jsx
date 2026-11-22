@@ -1,382 +1,339 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { 
-  Navigation, ArrowRight, ShieldCheck, Compass, Radio, Search, Sliders, 
-  CalendarCheck, Send, Grid, Zap, DollarSign, Clock, Store, Users, CheckCircle2,
-  Camera, Video, Sprout, Map, Layers, ShieldAlert, Sparkles, ChevronRight
-} from 'lucide-react'
-
 import DroneCard from '../components/DroneCard'
 import ShopCard from '../components/ShopCard'
-import { 
-  categoriesData, stepsData, whyChooseData, featuredDrones, 
-  featuredShops, statsData 
+import {
+  categoriesData,
+  stepsData,
+  whyChooseData,
+  featuredDrones,
+  featuredShops,
+  statsData,
 } from '../data/mockData'
 
-// Helper function to dynamically map category icon strings to Lucide Components
-const getCategoryIcon = (iconName) => {
-  switch (iconName) {
-    case 'Camera': return <Camera className="w-6 h-6" />
-    case 'Video': return <Video className="w-6 h-6" />
-    case 'Sprout': return <Sprout className="w-6 h-6" />
-    case 'Map': return <Map className="w-6 h-6" />
-    case 'Layers': return <Layers className="w-6 h-6" />
-    case 'ShieldAlert': return <ShieldAlert className="w-6 h-6" />
-    default: return <Navigation className="w-6 h-6" />
-  }
+const categoryIcons = {
+  Camera: 'photo_camera',
+  Video: 'videocam',
+  Sprout: 'eco',
+  Map: 'map',
+  Layers: 'layers',
+  ShieldAlert: 'health_and_safety',
 }
 
-// Helper function to map Why Choose icon strings
-const getFeatureIcon = (iconName) => {
-  switch (iconName) {
-    case 'Grid': return <Grid className="w-6 h-6" />
-    case 'ShieldCheck': return <ShieldCheck className="w-6 h-6" />
-    case 'Zap': return <Zap className="w-6 h-6" />
-    case 'DollarSign': return <DollarSign className="w-6 h-6" />
-    case 'Clock': return <Clock className="w-6 h-6" />
-    case 'Compass': return <Compass className="w-6 h-6" />
-    default: return <Radio className="w-6 h-6" />
-  }
+const featureIcons = {
+  Grid: 'grid_view',
+  ShieldCheck: 'verified_user',
+  Zap: 'bolt',
+  DollarSign: 'payments',
+  Clock: 'schedule',
+  Compass: 'explore',
 }
 
-// Helper function to map Step icons
-const getStepIcon = (iconName) => {
-  switch (iconName) {
-    case 'Search': return <Search className="w-6 h-6" />
-    case 'Sliders': return <Sliders className="w-6 h-6" />
-    case 'CalendarCheck': return <CalendarCheck className="w-6 h-6" />
-    case 'Send': return <Send className="w-6 h-6" />
-    default: return <Navigation className="w-6 h-6" />
-  }
+const stepIcons = {
+  Search: 'search',
+  Sliders: 'tune',
+  CalendarCheck: 'event_available',
+  Send: 'send',
 }
 
-// Home Component: Complete Public Landing Page
 function Home() {
   return (
-    <div className="space-y-24 pb-20 overflow-hidden">
-      
-      {/* 1. HERO SECTION */}
-      <section className="relative bg-gradient-to-b from-blue-50/70 via-white to-slate-50 pt-12 pb-20 lg:pt-20 lg:pb-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            {/* Left Content Area */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-blue-100/80 text-blue-700 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold border border-blue-200 shadow-2xs">
-                <Sparkles className="w-4 h-4 text-blue-600" />
-                <span>Next-Gen Multi-Tenant Drone Rental Ecosystem</span>
+    <div className="bg-[#0f131c] space-y-20 pb-20 overflow-hidden">
+
+      {/* ── HERO ─────────────────────────────────────────────── */}
+      <section className="relative min-h-[90vh] flex items-center bg-grid-pattern overflow-hidden">
+        {/* Ambient glow blobs */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#00f0ff]/8 rounded-full blur-[120px] pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#3e90ff]/8 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+          <div className="max-w-4xl mx-auto text-center space-y-7">
+
+            {/* Live status badge */}
+            <div
+              className="inline-flex items-center gap-2 bg-[#1c2028] border border-[#00f0ff]/20 text-[#00f0ff] px-4 py-2 rounded-full text-[12px] font-semibold"
+              style={{ fontFamily: 'JetBrains Mono, monospace' }}
+            >
+              <div className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00f0ff] shadow-[0_0_8px_#00f0ff]" />
               </div>
-
-              {/* Main Heading */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
-                Rent the Right Drone. <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                  Fly Without Limits.
-                </span>
-              </h1>
-
-              {/* Supporting Text */}
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Discover professional drones from trusted rental providers. Book with confidence and manage your drone rental experience from one smart platform.
-              </p>
-
-              {/* Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                <Link
-                  to="/drones"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <span>Explore Drones</span>
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-
-                <a
-                  href="#shops"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-semibold px-7 py-3.5 rounded-xl border border-slate-300 shadow-2xs transition-all hover:border-slate-400 cursor-pointer"
-                >
-                  <Store className="w-5 h-5 text-blue-600" />
-                  <span>Find a Rental Shop</span>
-                </a>
-              </div>
-
-              {/* Floating Stat Badges Row */}
-              <div className="pt-8 border-t border-slate-200/80 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0">
-                <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-slate-200 shadow-2xs">
-                  <div className="text-xl font-extrabold text-blue-600">500+</div>
-                  <div className="text-xs text-slate-500 font-medium">Drones Available</div>
-                </div>
-                <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-slate-200 shadow-2xs">
-                  <div className="text-xl font-extrabold text-blue-600">50+</div>
-                  <div className="text-xs text-slate-500 font-medium">Trusted Shops</div>
-                </div>
-                <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-slate-200 shadow-2xs">
-                  <div className="text-xl font-extrabold text-blue-600">2,500+</div>
-                  <div className="text-xs text-slate-500 font-medium">Happy Customers</div>
-                </div>
-              </div>
-
+              Next-Gen Multi-Tenant Drone Rental Ecosystem
             </div>
 
-            {/* Right Graphic Preview Area */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md lg:max-w-none">
-                
-                {/* Hero Showcase Card */}
-                <div className="relative z-10 bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-2xl">
-                  <div className="relative h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-900">
-                    <img
-                      src="https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=800&q=80"
-                      alt="Drone Hero"
-                      className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                    
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-xs flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      Live Ready
-                    </div>
+            {/* Headline */}
+            <h1
+              className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]"
+              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            >
+              <span className="text-[#dfe2ee]">Rent the Right</span>
+              <br />
+              <span className="text-[#00f0ff] text-glow-primary">Drone. Fly Free.</span>
+            </h1>
 
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Enterprise Class</span>
-                      <h3 className="text-lg font-bold text-white">Mavic 3 Thermal RTK</h3>
-                      <p className="text-xs text-slate-300 mt-0.5">Dual Optical + Thermal Sensor Rig</p>
-                    </div>
-                  </div>
+            <p className="text-[16px] text-[#849495] leading-relaxed max-w-2xl mx-auto">
+              Discover professional drones from trusted rental providers. Book with confidence
+              and manage your entire drone rental experience from one smart platform.
+            </p>
 
-                  {/* Quick Card Floating Detail */}
-                  <div className="mt-4 flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <div>
-                      <div className="text-xs text-slate-500 font-medium">Daily Rental</div>
-                      <div className="text-lg font-extrabold text-slate-900">$120 <span className="text-xs font-normal text-slate-500">/ day</span></div>
-                    </div>
-                    <Link to="/drones" className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
-                      Book Now
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Decorative Blur Effect */}
-                <div className="absolute -top-6 -right-6 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl -z-10" />
-                <div className="absolute -bottom-6 -left-6 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl -z-10" />
-              </div>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <Link
+                to="/drones"
+                className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#00f0ff] text-[#002022] font-bold text-[14px] transition-all hover:bg-[#7df4ff] glow-primary active:scale-95"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}>flight_takeoff</span>
+                Explore Drones
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
+              </Link>
+              <a
+                href="#shops"
+                className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#1c2028] border border-[#3b494b]/50 hover:border-[#00f0ff]/30 text-[#b9cacb] hover:text-[#dfe2ee] font-semibold text-[14px] transition-all"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>storefront</span>
+                Find a Rental Shop
+              </a>
             </div>
 
+            {/* Trust badges */}
+            <div className="flex flex-wrap items-center justify-center gap-6 pt-2">
+              {[
+                { icon: 'verified_user', label: 'Verified Providers' },
+                { icon: 'sensors', label: 'Smart Tracking' },
+                { icon: 'wifi', label: 'Real-time Updates' },
+                { icon: 'my_location', label: 'GPS Precision' },
+              ].map(({ icon, label }) => (
+                <div key={label} className="flex items-center gap-1.5 text-[12px] text-[#849495]">
+                  <span className="material-symbols-outlined text-[#00dbe9]" style={{ fontSize: '15px' }}>{icon}</span>
+                  {label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. DRONE CATEGORIES SECTION */}
+      {/* ── CATEGORIES ─────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Find the Perfect Drone for Every Mission
+        <div className="text-center mb-10">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#00f0ff]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            Browse by Use Case
+          </span>
+          <h2 className="text-[28px] font-semibold text-[#dfe2ee] mt-2 tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            Drone Categories
           </h2>
-          <p className="text-base text-slate-600">
-            Tailored UAV equipment categorized for specialized industry requirements.
-          </p>
+          <p className="text-[13px] text-[#849495] mt-1">Find the perfect drone for your mission.</p>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-          {categoriesData.map((cat) => (
-            <div
-              key={cat.id}
-              className="group relative bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {categoriesData.map((cat, i) => (
+            <Link
+              key={i}
+              to="/drones"
+              className="group flex flex-col items-center gap-3 p-5 bg-[#181c24] border border-[#3b494b]/40 hover:border-[#00f0ff]/40 rounded-2xl transition-all hover:-translate-y-1 hover:bg-[#1c2028] hover:shadow-[0_4px_20px_rgba(0,240,255,0.06)]"
             >
-              <div className="space-y-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.bgGradient} ${cat.iconColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                  {getCategoryIcon(cat.iconName)}
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {cat.name}
-                  </h3>
-                  <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-                    {cat.description}
-                  </p>
-                </div>
+              <div className="w-11 h-11 rounded-xl bg-[#1c2028] border border-[#3b494b]/50 group-hover:border-[#00f0ff]/40 flex items-center justify-center transition-colors">
+                <span className="material-symbols-outlined text-[#849495] group-hover:text-[#00f0ff] transition-colors" style={{ fontSize: '20px' }}>
+                  {categoryIcons[cat.iconName] || 'flight'}
+                </span>
               </div>
-
-              <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold">
-                <span className="text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md">{cat.droneCount}</span>
-                <Link to="/drones" className="text-slate-500 group-hover:text-blue-600 flex items-center gap-1 transition-colors">
-                  <span>Browse</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
+              <span className="text-[12px] font-semibold text-[#b9cacb] group-hover:text-[#00f0ff] text-center transition-colors leading-tight">
+                {cat.name}
+              </span>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* 3. HOW DRONEHUB WORKS SECTION */}
-      <section className="bg-slate-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-400">Simple & Fast Workflow</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              How DroneHub Works
+      {/* ── HOW IT WORKS ───────────────────────────────────────── */}
+      <section className="relative py-16">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00f0ff]/3 to-transparent pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[#00f0ff]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+              Simple Process
+            </span>
+            <h2 className="text-[28px] font-semibold text-[#dfe2ee] mt-2 tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              How It Works
             </h2>
-            <p className="text-slate-400 text-sm sm:text-base">
-              Renting a drone is seamless. Follow 4 simple steps from browsing to takeoff.
-            </p>
+            <p className="text-[13px] text-[#849495] mt-1">Get in the air in four easy steps.</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
-            {stepsData.map((step) => (
-              <div key={step.stepNumber} className="relative bg-slate-800/80 p-6 rounded-2xl border border-slate-700 hover:border-blue-500 transition-colors group">
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-black text-blue-500/40 group-hover:text-blue-400 transition-colors">
-                    {step.stepNumber}
-                  </span>
-                  <div className="w-10 h-10 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center">
-                    {getStepIcon(step.iconName)}
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {stepsData.map((step, i) => (
+              <div
+                key={i}
+                className="relative p-5 bg-[#181c24] border border-[#3b494b]/40 hover:border-[#00f0ff]/30 rounded-2xl transition-all hover:-translate-y-1 group"
+              >
+                {/* Step number watermark */}
+                <div
+                  className="absolute top-4 right-4 font-black text-[36px] text-[#3b494b]/40 leading-none select-none"
+                  style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                >
+                  {String(i + 1).padStart(2, '0')}
                 </div>
-
-                <h3 className="text-xl font-bold text-white mt-4">{step.title}</h3>
-                <p className="text-sm text-slate-400 mt-2 leading-relaxed">{step.description}</p>
+                <div className="w-11 h-11 rounded-xl bg-[#1c2028] border border-[#00f0ff]/20 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[#00f0ff]" style={{ fontSize: '20px' }}>
+                    {stepIcons[step.iconName] || 'flight'}
+                  </span>
+                </div>
+                <h3 className="text-[15px] font-semibold text-[#dfe2ee] mb-1.5" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  {step.title}
+                </h3>
+                <p className="text-[12px] text-[#849495] leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
-
-          <div className="mt-12 text-center">
-            <Link
-              to="/how-it-works"
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-md cursor-pointer"
-            >
-              <span>Learn Complete Workflow</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
         </div>
       </section>
 
-      {/* 4. WHY CHOOSE DRONEHUB SECTION */}
+      {/* ── WHY CHOOSE ─────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Why Choose DroneHub
+        <div className="text-center mb-10">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-[#4ae176]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            Our Edge
+          </span>
+          <h2 className="text-[28px] font-semibold text-[#dfe2ee] mt-2 tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            Why Choose DroneHub?
           </h2>
-          <p className="text-base text-slate-600">
-            Engineered to make drone discovery, host trust, and fleet rental effortless.
-          </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          {whyChooseData.map((item) => (
-            <div key={item.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-md transition-shadow space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                {getFeatureIcon(item.iconName)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {whyChooseData.map((item, i) => (
+            <div
+              key={i}
+              className="p-5 bg-[#181c24] border border-[#3b494b]/40 hover:border-[#4ae176]/30 rounded-2xl transition-all hover:-translate-y-1 group"
+            >
+              <div className="w-11 h-11 rounded-xl bg-[#1c2028] border border-[#4ae176]/20 flex items-center justify-center mb-4">
+                <span className="material-symbols-outlined text-[#4ae176]" style={{ fontSize: '20px' }}>
+                  {featureIcons[item.iconName] || 'star'}
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
+              <h3 className="text-[15px] font-semibold text-[#dfe2ee] mb-1.5" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                {item.title}
+              </h3>
+              <p className="text-[12px] text-[#849495] leading-relaxed">{item.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 5. FEATURED DRONES PREVIEW */}
+      {/* ── FEATURED DRONES ────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="flex items-end justify-between gap-4 mb-7">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Top Rated Fleet</span>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-              Featured Drones Preview
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[#00f0ff]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+              Top Rated Fleet
+            </span>
+            <h2 className="text-[28px] font-semibold text-[#dfe2ee] mt-1 tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              Featured Drones
             </h2>
-            <p className="text-sm text-slate-600 mt-1">Explore some of our most popular rental drones ready for dispatch.</p>
+            <p className="text-[13px] text-[#849495] mt-0.5">Popular rental drones ready for dispatch.</p>
           </div>
-
           <Link
             to="/drones"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-sm"
+            className="flex items-center gap-1 text-[13px] text-[#b9cacb] hover:text-[#00f0ff] font-semibold transition-colors whitespace-nowrap"
           >
-            <span>View All Drones</span>
-            <ArrowRight className="w-4 h-4" />
+            View All <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
           </Link>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {featuredDrones.map((drone) => (
             <DroneCard key={drone.id} drone={drone} />
           ))}
         </div>
       </section>
 
-      {/* 6. FEATURED RENTAL SHOPS */}
+      {/* ── FEATURED SHOPS ─────────────────────────────────────── */}
       <section id="shops" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="flex items-end justify-between gap-4 mb-7">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Certified Hosts</span>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[#aac7ff]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+              Certified Hosts
+            </span>
+            <h2 className="text-[28px] font-semibold text-[#dfe2ee] mt-1 tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
               Featured Rental Shops
             </h2>
-            <p className="text-sm text-slate-600 mt-1">Rent from verified local store owners with inspect-tested hardware.</p>
+            <p className="text-[13px] text-[#849495] mt-0.5">Rent from verified local store owners.</p>
           </div>
-
           <Link
             to="/drones"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-sm"
+            className="flex items-center gap-1 text-[13px] text-[#b9cacb] hover:text-[#aac7ff] font-semibold transition-colors whitespace-nowrap"
           >
-            <span>Explore Shops</span>
-            <ArrowRight className="w-4 h-4" />
+            Explore <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
           </Link>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {featuredShops.map((shop) => (
             <ShopCard key={shop.id} shop={shop} />
           ))}
         </div>
       </section>
 
-      {/* 7. STATISTICS SECTION */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-blue-400/30">
-            {statsData.map((stat, idx) => (
-              <div key={idx} className="pt-4 md:pt-0 space-y-1">
-                <div className="text-4xl sm:text-5xl font-black tracking-tight">{stat.value}</div>
-                <div className="text-sm font-medium text-blue-100">{stat.label}</div>
+      {/* ── STATS ──────────────────────────────────────────────── */}
+      <section className="relative py-14 overflow-hidden">
+        <div className="absolute inset-0 bg-[#181c24] border-y border-[#3b494b]/20" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-40" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {statsData.map((stat, i) => (
+              <div key={i} className="space-y-2">
+                <div
+                  className="text-[42px] sm:text-[52px] font-bold text-[#00f0ff] text-glow-primary leading-none"
+                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-[11px] text-[#849495] uppercase tracking-widest" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 8. CALL TO ACTION SECTION */}
+      {/* ── CTA ────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative bg-slate-900 rounded-3xl p-8 sm:p-14 text-center text-white overflow-hidden shadow-2xl">
-          <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-              Ready to Take Your Next Flight?
+        <div className="relative bg-[#181c24] border border-[#3b494b]/40 rounded-3xl p-10 sm:p-16 text-center overflow-hidden">
+          {/* Ambient glows */}
+          <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-[#00f0ff]/8 rounded-full blur-[80px] pointer-events-none" />
+          <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-[#3e90ff]/8 rounded-full blur-[80px] pointer-events-none" />
+          <div className="absolute inset-0 bg-grid-pattern opacity-30" />
+
+          <div className="relative z-10 max-w-3xl mx-auto space-y-5">
+            <div
+              className="inline-flex items-center gap-2 bg-[#1c2028] border border-[#00f0ff]/20 text-[#00f0ff] px-4 py-1.5 rounded-full text-[12px] font-semibold"
+              style={{ fontFamily: 'JetBrains Mono, monospace' }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }}>bolt</span>
+              Ready to Launch?
+            </div>
+
+            <h2
+              className="text-[32px] sm:text-[44px] font-bold text-[#dfe2ee] tracking-tight"
+              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+            >
+              Take Your Next{' '}
+              <span className="text-[#00f0ff] text-glow-primary">Flight</span> Today
             </h2>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-              Join thousands of pilots, photographers, and businesses discovering top drone technology through DroneHub.
+
+            <p className="text-[15px] text-[#849495] leading-relaxed">
+              Join thousands of pilots and businesses discovering top drone technology through DroneHub.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link
                 to="/drones"
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#00f0ff] text-[#002022] font-bold text-[14px] transition-all hover:bg-[#7df4ff] glow-primary active:scale-95"
               >
                 Explore Drones
               </Link>
               <Link
-                to="/contact"
-                className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white font-semibold px-8 py-3.5 rounded-xl border border-slate-700 transition-all cursor-pointer"
+                to="/auth/register"
+                className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#1c2028] border border-[#3b494b]/50 hover:border-[#00f0ff]/30 text-[#b9cacb] hover:text-[#dfe2ee] font-semibold text-[14px] transition-all"
               >
-                Get Started
+                Create Account
               </Link>
             </div>
           </div>
-
-          {/* Decorative background glow */}
-          <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-blue-600/30 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-64 h-64 bg-indigo-600/30 rounded-full blur-3xl pointer-events-none" />
         </div>
       </section>
 

@@ -1,51 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { Navigation, Menu, X, ArrowRight, User, LogOut, LayoutDashboard, ShieldCheck, Store } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-// Navbar Component: Responsive top navigation bar with active links, auth state, and mobile drawer
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
-
   const { currentUser, isAuthenticated, userRole, logout } = useAuth()
   const navigate = useNavigate()
 
-  // Track window scroll position to add sticky background blur & shadow
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true)
-      } else {
-        setIsScrolled(false)
-      }
-    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Navigation Items Array
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Drones', path: '/drones' },
-    { name: 'How It Works', path: '/how-it-works' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Store', path: '/drones', icon: 'storefront' },
+    { name: 'How It Works', path: '/how-it-works', icon: 'radar' },
+    { name: 'About', path: '/about', icon: 'info' },
+    { name: 'Contact', path: '/contact', icon: 'mail' },
   ]
 
-  // Get dashboard path by role
   const getDashboardPath = () => {
     if (userRole === 'super-admin') return '/admin/dashboard'
     if (userRole === 'shop-owner') return '/owner/dashboard'
     return '/user/dashboard'
   }
 
-  // Format user role label
   const getRoleLabel = () => {
     if (userRole === 'super-admin') return 'Super Admin'
     if (userRole === 'shop-owner') return 'Shop Owner'
-    return 'Customer'
+    return 'Pilot'
   }
 
   const handleLogout = () => {
@@ -59,172 +45,174 @@ function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 py-3'
-          : 'bg-white border-b border-slate-200 py-4'
+          ? 'bg-[#0a0e16]/90 backdrop-blur-xl shadow-[0_1px_20px_rgba(0,0,0,0.6)] border-b border-[#3b494b]/40'
+          : 'bg-[#0a0e16]/70 backdrop-blur-md border-b border-[#3b494b]/20'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          
-          {/* Left Side: Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 text-blue-600 hover:text-blue-700 transition-colors group">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <Navigation className="w-6 h-6 transform rotate-45" />
-            </div>
-            <span className="text-xl font-black tracking-tight text-slate-900">
-              DRONE<span className="text-blue-600">HUB</span>
-            </span>
-          </Link>
+      <div className="h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
 
-          {/* Middle: Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                className={({ isActive }) =>
-                  `px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'text-blue-600 bg-blue-50/80 font-semibold'
-                      : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
-                  }`
-                }
-              >
-                {item.name}
-              </NavLink>
-            ))}
-          </nav>
-
-          {/* Right Side: Action Buttons / User Profile */}
-          <div className="hidden md:flex items-center space-x-3">
-            {isAuthenticated ? (
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  className="flex items-center gap-2.5 bg-slate-100 hover:bg-slate-200/80 text-slate-800 p-1.5 pr-3 rounded-full border border-slate-200 transition-all cursor-pointer"
-                >
-                  <img
-                    src={currentUser?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
-                    alt={currentUser?.name}
-                    className="w-8 h-8 rounded-full object-cover border border-white"
-                  />
-                  <div className="text-left text-xs leading-tight">
-                    <div className="font-extrabold text-slate-900 truncate max-w-[100px]">
-                      {currentUser?.name}
-                    </div>
-                    <div className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">
-                      {getRoleLabel()}
-                    </div>
-                  </div>
-                </button>
-
-                {/* Profile Dropdown Menu */}
-                {isProfileDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="px-4 py-2 border-b border-slate-100 space-y-0.5">
-                      <div className="font-bold text-slate-900">{currentUser?.name}</div>
-                      <div className="text-slate-500 text-[11px] truncate">{currentUser?.email}</div>
-                    </div>
-
-                    <Link
-                      to={getDashboardPath()}
-                      onClick={() => setIsProfileDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-600 font-semibold transition-colors"
-                    >
-                      <LayoutDashboard className="w-4 h-4 text-blue-600" />
-                      <span>Dashboard</span>
-                    </Link>
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-rose-600 hover:bg-rose-50 font-semibold transition-colors cursor-pointer text-left"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link
-                  to="/auth/login"
-                  className="text-slate-700 hover:text-blue-600 px-4 py-2 text-sm font-semibold transition-colors"
-                >
-                  Login
-                </Link>
-                
-                <Link
-                  to="/auth/register"
-                  className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4.5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md cursor-pointer"
-                >
-                  <span>Get Started</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Hamburger Button */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-slate-700 hover:text-blue-600 p-2 rounded-lg focus:outline-none bg-slate-100"
-              aria-label="Toggle Navigation Menu"
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00dbe9] to-[#3e90ff] flex items-center justify-center glow-primary group-hover:scale-105 transition-transform">
+            <span
+              className="material-symbols-outlined text-[#002022]"
+              style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+              flight_takeoff
+            </span>
           </div>
+          <div className="flex flex-col leading-none">
+            <div className="flex items-center gap-1.5">
+              <span style={{ fontFamily: 'Space Grotesk, sans-serif' }} className="font-bold text-[18px] text-[#00f0ff] tracking-tight">
+                DroneHub
+              </span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#00f0ff]/10 text-[#00f0ff] font-bold uppercase tracking-wide border border-[#00f0ff]/20" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+                v2.0
+              </span>
+            </div>
+            <span className="text-[10px] text-[#b9cacb] leading-3 mt-0.5" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+              Rent. Fly. Track.
+            </span>
+          </div>
+        </Link>
 
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.path}
+              className={({ isActive }) =>
+                `flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all ${
+                  isActive
+                    ? 'text-[#00f0ff] bg-[#00f0ff]/10 font-semibold'
+                    : 'text-[#b9cacb] hover:text-[#dfe2ee] hover:bg-[#1c2028]'
+                }`
+              }
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>{item.icon}</span>
+              {item.name}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Right side */}
+        <div className="hidden md:flex items-center gap-2">
+          {isAuthenticated ? (
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                className="flex items-center gap-2 bg-[#1c2028] hover:bg-[#262a33] border border-[#3b494b]/50 hover:border-[#00f0ff]/30 p-1.5 pr-3 rounded-full transition-all cursor-pointer"
+              >
+                <div className="relative">
+                  <img
+                    src={currentUser?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80'}
+                    alt="Profile"
+                    className="w-7 h-7 rounded-full object-cover ring-1 ring-[#00f0ff]/30"
+                  />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-[#4ae176] rounded-full border-2 border-[#1c2028]" />
+                </div>
+                <div className="text-left">
+                  <div className="text-[12px] font-semibold text-[#dfe2ee] leading-4 max-w-[90px] truncate">{currentUser?.name}</div>
+                  <div className="text-[10px] text-[#00f0ff] font-semibold uppercase" style={{ fontFamily: 'JetBrains Mono, monospace' }}>{getRoleLabel()}</div>
+                </div>
+              </button>
+
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-52 bg-[#1c2028] border border-[#3b494b]/50 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden py-1 z-50">
+                  <Link
+                    to={getDashboardPath()}
+                    onClick={() => setIsProfileDropdownOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-[#b9cacb] hover:bg-[#262a33] hover:text-[#00f0ff] transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[#00f0ff]" style={{ fontSize: '16px' }}>dashboard</span>
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-2.5 text-[13px] text-[#ffb4ab] hover:bg-[#93000a]/20 transition-colors cursor-pointer text-left"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>logout</span>
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link
+                to="/auth/login"
+                className="text-[13px] text-[#b9cacb] hover:text-[#dfe2ee] px-3 py-2 rounded-xl transition-colors hover:bg-[#1c2028]"
+              >
+                Login
+              </Link>
+              <Link
+                to="/auth/register"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-[#00f0ff] text-[#002022] text-[13px] font-bold transition-all hover:bg-[#7df4ff] glow-primary active:scale-95 cursor-pointer"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }}>bolt</span>
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-[#1c2028] border border-[#3b494b]/40 text-[#b9cacb] hover:text-[#00f0ff] hover:border-[#00f0ff]/30 transition-colors"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>
+            {isMobileMenuOpen ? 'close' : 'menu'}
+          </span>
+        </button>
       </div>
 
-      {/* Mobile Drawer Dropdown */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden border-t border-[#3b494b]/30 bg-[#0a0e16]/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-1">
           {navItems.map((item) => (
             <NavLink
               key={item.name}
               to={item.path}
               onClick={() => setIsMobileMenuOpen(false)}
               className={({ isActive }) =>
-                `block px-3 py-2.5 rounded-xl text-base font-medium transition-colors ${
+                `flex items-center gap-2 px-3 py-2.5 rounded-xl text-[14px] font-medium transition-colors ${
                   isActive
-                    ? 'text-blue-600 bg-blue-50 font-semibold'
-                    : 'text-slate-700 hover:text-blue-600 hover:bg-slate-50'
+                    ? 'text-[#00f0ff] bg-[#00f0ff]/10 font-semibold'
+                    : 'text-[#b9cacb] hover:text-[#dfe2ee] hover:bg-[#1c2028]'
                 }`
               }
             >
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>{item.icon}</span>
               {item.name}
             </NavLink>
           ))}
-          
-          <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
+
+          <div className="pt-3 border-t border-[#3b494b]/20 flex flex-col gap-2 mt-2">
             {isAuthenticated ? (
               <>
-                <div className="p-3 bg-slate-50 rounded-xl flex items-center gap-3">
+                <div className="p-3 bg-[#1c2028] rounded-xl flex items-center gap-3 border border-[#3b494b]/30">
                   <img
                     src={currentUser?.avatar}
-                    alt={currentUser?.name}
-                    className="w-10 h-10 rounded-full object-cover"
+                    alt=""
+                    className="w-9 h-9 rounded-full object-cover ring-1 ring-[#00f0ff]/30"
                   />
                   <div>
-                    <div className="font-bold text-sm text-slate-900">{currentUser?.name}</div>
-                    <div className="text-xs text-blue-600 font-bold uppercase">{getRoleLabel()}</div>
+                    <div className="text-[13px] font-semibold text-[#dfe2ee]">{currentUser?.name}</div>
+                    <div className="text-[10px] text-[#00f0ff] uppercase" style={{ fontFamily: 'JetBrains Mono, monospace' }}>{getRoleLabel()}</div>
                   </div>
                 </div>
-
                 <Link
                   to={getDashboardPath()}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-center bg-blue-600 text-white py-2.5 rounded-xl font-bold text-sm shadow-xs"
+                  className="w-full text-center bg-[#00f0ff] text-[#002022] py-2.5 rounded-full font-bold text-[13px] glow-primary"
                 >
                   My Dashboard
                 </Link>
-
                 <button
                   onClick={handleLogout}
-                  className="w-full text-center bg-rose-50 text-rose-700 hover:bg-rose-100 py-2.5 rounded-xl font-bold text-sm transition-colors cursor-pointer"
+                  className="w-full text-center bg-[#93000a]/20 text-[#ffb4ab] py-2.5 rounded-full font-bold text-[13px] border border-[#ffb4ab]/20 cursor-pointer"
                 >
                   Sign Out
                 </button>
@@ -234,14 +222,14 @@ function Navbar() {
                 <Link
                   to="/auth/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-center text-slate-700 hover:bg-slate-100 py-2.5 rounded-xl font-medium"
+                  className="w-full text-center text-[#b9cacb] hover:bg-[#1c2028] py-2.5 rounded-full font-medium text-[13px] border border-[#3b494b]/30"
                 >
                   Login
                 </Link>
                 <Link
                   to="/auth/register"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-semibold shadow-xs"
+                  className="w-full text-center bg-[#00f0ff] text-[#002022] py-2.5 rounded-full font-bold text-[13px] glow-primary"
                 >
                   Get Started
                 </Link>

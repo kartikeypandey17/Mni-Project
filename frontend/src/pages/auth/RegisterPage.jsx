@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, Mail, Phone, Lock, Eye, EyeOff, Store, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react'
 import AuthLayout from '../../layouts/AuthLayout'
 import { useAuth } from '../../context/AuthContext'
 
@@ -16,8 +15,7 @@ function RegisterPage() {
   const navigate = useNavigate()
   const { register } = useAuth()
 
-  // Form State
-  const [role, setRole] = useState('customer') // 'customer' | 'shop-owner'
+  const [role, setRole] = useState('customer')
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -25,102 +23,64 @@ function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  
   const [errorMessage, setErrorMessage] = useState(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  // Password Strength Calculation Helper
   const passwordStrength = useMemo(() => {
-    if (!password) return { label: '', color: 'bg-slate-200', score: 0 }
+    if (!password) return { label: '', color: 'bg-[#262a33]', width: 'w-0', score: 0 }
     let score = 0
     if (password.length >= 8) score++
     if (/[0-9]/.test(password)) score++
     if (/[^A-Za-z0-9]/.test(password)) score++
     if (/[A-Z]/.test(password)) score++
-
-    if (score <= 2) return { label: 'Weak', color: 'bg-rose-500', width: 'w-1/3' }
-    if (score === 3) return { label: 'Medium', color: 'bg-amber-500', width: 'w-2/3' }
-    return { label: 'Strong', color: 'bg-emerald-500', width: 'w-full' }
+    if (score <= 2) return { label: 'Weak', color: 'bg-[#ffb4ab]', width: 'w-1/3' }
+    if (score === 3) return { label: 'Medium', color: 'bg-amber-400', width: 'w-2/3' }
+    return { label: 'Strong', color: 'bg-[#4ae176]', width: 'w-full' }
   }, [password])
 
-  // Form Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault()
     setErrorMessage(null)
-
-    if (!fullName || fullName.trim().length < 2) {
-      setErrorMessage('Please enter your full legal name.')
-      return
-    }
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setErrorMessage('Please enter a valid email address.')
-      return
-    }
-
-    if (!phone || !/^[0-9+\s-]{10,15}$/.test(phone.trim())) {
-      setErrorMessage('Please enter a valid phone number.')
-      return
-    }
-
-    if (!password || password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long.')
-      return
-    }
-
-    if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match.')
-      return
-    }
-
-    if (!agreeTerms) {
-      setErrorMessage('You must agree to the Terms & Conditions to register.')
-      return
-    }
-
+    if (!fullName || fullName.trim().length < 2) { setErrorMessage('Please enter your full legal name.'); return }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setErrorMessage('Please enter a valid email address.'); return }
+    if (!phone || !/^[0-9+\s-]{10,15}$/.test(phone.trim())) { setErrorMessage('Please enter a valid phone number.'); return }
+    if (!password || password.length < 8) { setErrorMessage('Password must be at least 8 characters long.'); return }
+    if (password !== confirmPassword) { setErrorMessage('Passwords do not match.'); return }
+    if (!agreeTerms) { setErrorMessage('You must agree to the Terms & Conditions to register.'); return }
     try {
-      // Call backend registration handler
       const result = await register({ fullName, email, phone, password, role })
-
-      if (result.success) {
-        setIsSuccess(true)
-      } else {
-        setErrorMessage(result.error)
-      }
+      if (result.success) setIsSuccess(true)
+      else setErrorMessage(result.error)
     } catch (err) {
       setErrorMessage(err.message || 'Registration failed. Please try again.')
     }
   }
 
-  // SUCCESSFUL REGISTRATION SCREEN
+  const inputClass = "w-full h-11 bg-[#1c2028] border border-[#3b494b]/50 focus:border-[#00f0ff]/60 focus:ring-1 focus:ring-[#00f0ff]/20 focus:outline-none rounded-xl px-4 text-[14px] text-[#dfe2ee] placeholder-[#3b494b] transition-all"
+  const labelClass = "block text-[11px] font-bold text-[#b9cacb] uppercase tracking-widest mb-1"
+
   if (isSuccess) {
     return (
       <AuthLayout>
-        <div className="text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
-          
-          <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-10 h-10 stroke-[2.5]" />
+        <div className="text-center space-y-6">
+          <div className="w-16 h-16 rounded-full bg-[#4ae176]/10 border border-[#4ae176]/30 flex items-center justify-center mx-auto">
+            <span className="material-symbols-outlined text-[#4ae176]" style={{ fontSize: '36px', fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
-
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-              Account Created Successfully!
+            <h1 className="text-[28px] font-bold text-[#dfe2ee] tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              Account Created!
             </h1>
-            <p className="text-slate-600 text-sm max-w-sm mx-auto">
+            <p className="text-[13px] text-[#849495] max-w-sm mx-auto">
               Your DroneHub account has been created. You can now sign in using your credentials.
             </p>
           </div>
-
-          <div className="pt-4">
-            <Link
-              to="/auth/login"
-              className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-xl text-sm shadow-md transition-all cursor-pointer"
-            >
-              <span>Go to Login</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
+          <Link
+            to="/auth/login"
+            className="w-full inline-flex items-center justify-center gap-2 h-12 px-8 rounded-full bg-[#00f0ff] text-[#002022] font-bold text-[14px] transition-all hover:bg-[#7df4ff] glow-primary active:scale-95"
+          >
+            Go to Login
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
+          </Link>
         </div>
       </AuthLayout>
     )
@@ -128,225 +88,134 @@ function RegisterPage() {
 
   return (
     <AuthLayout>
-      <div className="space-y-6">
-        
-        {/* Header */}
+      <div className="space-y-5">
+
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-            Create Your DroneHub Account
+          <h1 className="text-[26px] font-bold text-[#dfe2ee] tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            Create Your Account
           </h1>
-          <p className="text-slate-500 text-sm">
-            Join thousands of pilots and drone rental hosts.
-          </p>
+          <p className="text-[13px] text-[#849495]">Join thousands of pilots and drone rental hosts.</p>
         </div>
 
-        {/* ACCOUNT TYPE SELECTOR CARDS */}
+        {/* Account Type */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Account Type
-          </label>
+          <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Account Type</label>
           <div className="grid grid-cols-2 gap-3">
-            
-            <button
-              type="button"
-              onClick={() => setRole('customer')}
-              className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
-                role === 'customer'
-                  ? 'border-blue-600 bg-blue-50/50 shadow-xs'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
-              }`}
-            >
-              <div className="flex items-center gap-2 font-bold text-slate-900 text-xs sm:text-sm">
-                <User className="w-4 h-4 text-blue-600" />
-                <span>Customer</span>
-              </div>
-              <p className="text-[11px] text-slate-500 mt-1 leading-tight">
-                Rent drones for your projects & missions.
-              </p>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setRole('shop-owner')}
-              className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
-                role === 'shop-owner'
-                  ? 'border-blue-600 bg-blue-50/50 shadow-xs'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
-              }`}
-            >
-              <div className="flex items-center gap-2 font-bold text-slate-900 text-xs sm:text-sm">
-                <Store className="w-4 h-4 text-purple-600" />
-                <span>Shop Owner</span>
-              </div>
-              <p className="text-[11px] text-slate-500 mt-1 leading-tight">
-                List & manage your rental fleet business.
-              </p>
-            </button>
-
+            {[
+              { r: 'customer', icon: 'person', label: 'Customer', desc: 'Rent drones for your projects & missions.', color: '#00f0ff' },
+              { r: 'shop-owner', icon: 'storefront', label: 'Shop Owner', desc: 'List & manage your rental fleet business.', color: '#aac7ff' },
+            ].map(({ r, icon, label, desc, color }) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRole(r)}
+                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
+                  role === r
+                    ? 'border-[#00f0ff]/60 bg-[#00f0ff]/8 shadow-[0_0_20px_rgba(0,240,255,0.1)]'
+                    : 'border-[#3b494b]/40 bg-[#1c2028] hover:border-[#3b494b]/70'
+                }`}
+              >
+                <div className="flex items-center gap-2 text-[13px] font-semibold text-[#dfe2ee]">
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px', color, fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                  {label}
+                </div>
+                <p className="text-[11px] text-[#849495] mt-1 leading-tight">{desc}</p>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* ERROR DISPLAY */}
+        {/* Error */}
         {errorMessage && (
-          <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+          <div className="p-3.5 bg-[#93000a]/20 border border-[#ffb4ab]/30 text-[#ffb4ab] rounded-2xl text-[12px] font-semibold flex items-center gap-2">
+            <span className="material-symbols-outlined shrink-0" style={{ fontSize: '16px' }}>error</span>
             <span>{errorMessage}</span>
           </div>
         )}
 
-        {/* FORM */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Full Name */}
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Full Legal Name <span className="text-rose-500">*</span>
-            </label>
+
+          <div>
+            <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Full Legal Name <span className="text-[#ffb4ab]">*</span></label>
             <div className="relative">
-              <input
-                type="text"
-                placeholder="e.g. Kartikey Sharma"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-2.5 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                required
-              />
-              <User className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input type="text" placeholder="e.g. Kartikey Sharma" value={fullName} onChange={(e) => setFullName(e.target.value)} className={`${inputClass} pr-10`} required />
+              <span className="material-symbols-outlined text-[#849495] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: '16px' }}>person</span>
             </div>
           </div>
 
-          {/* Email & Phone Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Email <span className="text-rose-500">*</span>
-              </label>
+            <div>
+              <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Email <span className="text-[#ffb4ab]">*</span></label>
               <div className="relative">
-                <input
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-2.5 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                  required
-                />
-                <Mail className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input type="email" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={`${inputClass} pr-10`} required />
+                <span className="material-symbols-outlined text-[#849495] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: '16px' }}>mail</span>
               </div>
             </div>
-
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Phone Number <span className="text-rose-500">*</span>
-              </label>
+            <div>
+              <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Phone <span className="text-[#ffb4ab]">*</span></label>
               <div className="relative">
-                <input
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-2.5 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                  required
-                />
-                <Phone className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input type="tel" placeholder="+91 98765 43210" value={phone} onChange={(e) => setPhone(e.target.value)} className={`${inputClass} pr-10`} required />
+                <span className="material-symbols-outlined text-[#849495] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: '16px' }}>phone</span>
               </div>
             </div>
-
           </div>
 
-          {/* Password Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            
-            {/* Password */}
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Password <span className="text-rose-500">*</span>
-              </label>
+            <div>
+              <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Password <span className="text-[#ffb4ab]">*</span></label>
               <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Min 8 chars"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-2.5 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <input type={showPassword ? 'text' : 'password'} placeholder="Min 8 chars" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#849495] hover:text-[#00f0ff] cursor-pointer">
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>{showPassword ? 'visibility_off' : 'visibility'}</span>
                 </button>
               </div>
             </div>
-
-            {/* Confirm Password */}
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Confirm Password <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Re-enter password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-2.5 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                  required
-                />
-              </div>
+            <div>
+              <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Confirm Password <span className="text-[#ffb4ab]">*</span></label>
+              <input type={showPassword ? 'text' : 'password'} placeholder="Re-enter password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={inputClass} required />
             </div>
-
           </div>
 
-          {/* Password Strength Meter */}
+          {/* Password strength */}
           {password && (
-            <div className="space-y-1 text-xs">
-              <div className="flex justify-between font-semibold text-slate-600">
+            <div className="space-y-1 text-[11px]">
+              <div className="flex justify-between font-semibold text-[#849495]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
                 <span>Password Strength:</span>
-                <span className={passwordStrength.label === 'Strong' ? 'text-emerald-600' : passwordStrength.label === 'Medium' ? 'text-amber-600' : 'text-rose-600'}>
+                <span style={{ color: passwordStrength.label === 'Strong' ? '#4ae176' : passwordStrength.label === 'Medium' ? '#fbbf24' : '#ffb4ab' }}>
                   {passwordStrength.label}
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <div className={`h-full ${passwordStrength.color} ${passwordStrength.width} transition-all duration-300`} />
+              <div className="w-full h-1.5 bg-[#1c2028] rounded-full overflow-hidden border border-[#3b494b]/30">
+                <div className={`h-full ${passwordStrength.color} ${passwordStrength.width} transition-all duration-300 rounded-full`} />
               </div>
             </div>
           )}
 
-          {/* Terms & Conditions Checkbox */}
-          <div className="pt-1">
-            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 font-medium select-none">
-              <input
-                type="checkbox"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 mt-0.5"
-              />
-              <span>
-                I agree to the <a href="#terms" onClick={(e) => { e.preventDefault(); alert("DroneHub Rental Terms & Safety Policy"); }} className="text-blue-600 underline font-bold">Terms & Conditions</a> and Drone Operating Safety Guidelines.
-              </span>
-            </label>
-          </div>
+          {/* Terms */}
+          <label className="flex items-start gap-2.5 cursor-pointer text-[12px] text-[#849495] select-none">
+            <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="w-4 h-4 rounded accent-[#00f0ff] bg-[#1c2028] mt-0.5" />
+            <span>
+              I agree to the{' '}
+              <a href="#terms" onClick={(e) => { e.preventDefault(); alert('DroneHub Rental Terms & Safety Policy') }} className="text-[#00f0ff] hover:text-[#7df4ff] underline font-bold transition-colors">
+                Terms & Conditions
+              </a>
+              {' '}and Drone Operating Safety Guidelines.
+            </span>
+          </label>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm shadow-md shadow-blue-500/25 hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-full bg-[#00f0ff] text-[#002022] font-bold text-[14px] transition-all hover:bg-[#7df4ff] glow-primary active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>Create Account</span>
-            <ArrowRight className="w-4 h-4" />
+            Create Account
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
           </button>
-
         </form>
 
-        {/* Footer */}
-        <div className="text-center text-xs text-slate-600 pt-2 border-t border-slate-100">
+        <div className="text-center text-[12px] text-[#849495] pt-2 border-t border-[#3b494b]/30">
           Already have a DroneHub account?{' '}
-          <Link to="/auth/login" className="font-bold text-blue-600 hover:text-blue-700">
-            Sign In
-          </Link>
+          <Link to="/auth/login" className="font-bold text-[#00f0ff] hover:text-[#7df4ff] transition-colors">Sign In</Link>
         </div>
 
       </div>

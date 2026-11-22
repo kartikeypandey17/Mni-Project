@@ -1,88 +1,85 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Navigation, ShieldCheck, Compass, Zap, Sparkles } from 'lucide-react'
 
-// AuthLayout Component: Professional 2-column desktop / 1-column mobile authentication wrapper
+// AuthLayout: AeroPulse-inspired two-column auth wrapper
 function AuthLayout({ children, title, subtitle }) {
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      
-      <div className="w-full max-w-5xl bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
-        
-        {/* LEFT COLUMN: BRANDING & PLATFORM BENEFITS (Hidden on small mobile, 5 cols on lg) */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 p-8 lg:p-10 text-white flex flex-col justify-between relative overflow-hidden">
-          
-          {/* Top Logo & Title */}
+    <div className="min-h-screen bg-[#0f131c] bg-grid-pattern flex items-center justify-center p-4 sm:p-6 lg:p-8">
+
+      <div className="w-full max-w-5xl bg-[#181c24]/90 border border-[#3b494b]/40 backdrop-blur-xl rounded-3xl shadow-2xl shadow-black/60 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
+
+        {/* LEFT: Branding panel */}
+        <div className="lg:col-span-5 bg-gradient-to-br from-[#0a0e16] via-[#0f131c] to-[#0a0e16] p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden border-r border-[#3b494b]/30">
+
+          {/* Top content */}
           <div className="space-y-6 relative z-10">
-            <Link to="/" className="inline-flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                <Navigation className="w-6 h-6 transform rotate-45" />
+            <Link to="/" className="inline-flex items-center gap-2.5 group">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00dbe9] to-[#3e90ff] flex items-center justify-center glow-primary group-hover:scale-105 transition-transform">
+                <span className="material-symbols-outlined text-[#002022]" style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>
+                  flight_takeoff
+                </span>
               </div>
-              <span className="text-2xl font-black tracking-tight text-white">
-                DRONE<span className="text-blue-400">HUB</span>
+              <span className="text-[22px] font-bold text-[#00f0ff] tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                DroneHub
               </span>
             </Link>
 
             <div className="space-y-2 pt-4">
-              <div className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs font-bold border border-blue-400/30">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Multi-Tenant UAV Ecosystem</span>
+              <div
+                className="inline-flex items-center gap-2 bg-[#1c2028] border border-[#00f0ff]/20 text-[#00f0ff] px-3 py-1 rounded-full text-[11px] font-semibold"
+                style={{ fontFamily: 'JetBrains Mono, monospace' }}
+              >
+                <div className="flex h-1.5 w-1.5 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00f0ff] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00f0ff]" />
+                </div>
+                Multi-Tenant UAV Ecosystem
               </div>
-              
-              <h2 className="text-3xl font-black tracking-tight text-white leading-tight">
+
+              <h2 className="text-[28px] font-bold text-[#dfe2ee] leading-tight text-glow-primary" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
                 Rent. Fly. Track.
               </h2>
-              <p className="text-slate-300 text-sm leading-relaxed">
+              <p className="text-[13px] text-[#849495] leading-relaxed">
                 Connect with verified drone shops, access high-spec quadcopters, and manage commercial aerial missions effortlessly.
               </p>
             </div>
           </div>
 
-          {/* Key Platform Benefits List */}
-          <div className="space-y-4 py-8 relative z-10 text-xs">
-            <div className="flex items-start gap-3 bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10">
-              <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-              <div>
-                <div className="font-bold text-white">100% Insured & Verified Fleet</div>
-                <div className="text-slate-300 text-[11px]">Certified rental hosts & pre-calibrated equipment.</div>
+          {/* Benefits */}
+          <div className="space-y-3 py-8 relative z-10">
+            {[
+              { icon: 'verified_user', color: '#00f0ff', title: '100% Insured & Verified Fleet', desc: 'Certified rental hosts & pre-calibrated equipment.' },
+              { icon: 'bolt', color: '#aac7ff', title: 'Instant Rental Reservation', desc: 'Seamless digital dispatch and transparent deposit rules.' },
+              { icon: 'explore', color: '#4ae176', title: 'Role-Based Dashboard Access', desc: 'Tailored portals for Customers, Shop Owners, & Admins.' },
+            ].map(({ icon, color, title, desc }) => (
+              <div key={title} className="flex items-start gap-3 bg-[#1c2028] p-3.5 rounded-2xl border border-[#3b494b]/40">
+                <span className="material-symbols-outlined shrink-0 mt-0.5" style={{ fontSize: '18px', color, fontVariationSettings: "'FILL' 1" }}>
+                  {icon}
+                </span>
+                <div>
+                  <div className="text-[13px] font-semibold text-[#dfe2ee]">{title}</div>
+                  <div className="text-[11px] text-[#849495] mt-0.5">{desc}</div>
+                </div>
               </div>
-            </div>
-
-            <div className="flex items-start gap-3 bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10">
-              <Zap className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-              <div>
-                <div className="font-bold text-white">Instant Rental Reservation</div>
-                <div className="text-slate-300 text-[11px]">Seamless digital dispatch and transparent deposit rules.</div>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10">
-              <Compass className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-              <div>
-                <div className="font-bold text-white">Role-Based Dashboard Access</div>
-                <div className="text-slate-300 text-[11px]">Tailored portals for Customers, Shop Owners, & Admins.</div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Footer Note */}
-          <div className="text-[11px] text-slate-400 relative z-10 pt-4 border-t border-slate-700/60">
+          {/* Footer */}
+          <div className="text-[11px] text-[#3b494b] relative z-10 pt-4 border-t border-[#3b494b]/20" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
             © {new Date().getFullYear()} DroneHub Inc. All rights reserved.
           </div>
 
-          {/* Decorative background glow shapes */}
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-60 h-60 bg-blue-600/30 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-60 h-60 bg-indigo-600/30 rounded-full blur-3xl pointer-events-none" />
-
+          {/* Background glow decorations */}
+          <div className="absolute top-0 right-0 -mt-16 -mr-16 w-56 h-56 bg-[#00f0ff]/8 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-56 h-56 bg-[#3e90ff]/6 rounded-full blur-3xl pointer-events-none" />
         </div>
 
-        {/* RIGHT COLUMN: DYNAMIC AUTHENTICATION FORM CONTENT (7 cols on lg) */}
-        <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-white space-y-6">
+        {/* RIGHT: Form content */}
+        <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-[#0f131c]/40 space-y-6">
           {children}
         </div>
 
       </div>
-
     </div>
   )
 }

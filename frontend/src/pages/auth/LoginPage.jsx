@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff, User, Store, ShieldCheck, ArrowRight, KeyRound, AlertCircle, Sparkles } from 'lucide-react'
 import AuthLayout from '../../layouts/AuthLayout'
 import { useAuth } from '../../context/AuthContext'
 
@@ -16,16 +15,14 @@ function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
 
-  // Form State
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [selectedRole, setSelectedRole] = useState('customer') // 'customer' | 'shop-owner' | 'super-admin'
+  const [selectedRole, setSelectedRole] = useState('customer')
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  // Demo Credentials helper to quickly fill credentials for college evaluator testing
   const handleQuickFill = (role, demoEmail, demoPassword) => {
     setSelectedRole(role)
     setEmail(demoEmail)
@@ -33,40 +30,20 @@ function LoginPage() {
     setErrorMessage(null)
   }
 
-  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault()
     setErrorMessage(null)
-
-    // Basic email format check
-    if (!email || !email.trim()) {
-      setErrorMessage('Please enter your email address.')
-      return
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setErrorMessage('Please enter a valid email address.')
-      return
-    }
-    if (!password || !password.trim()) {
-      setErrorMessage('Please enter your password.')
-      return
-    }
-
+    if (!email || !email.trim()) { setErrorMessage('Please enter your email address.'); return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setErrorMessage('Please enter a valid email address.'); return }
+    if (!password || !password.trim()) { setErrorMessage('Please enter your password.'); return }
     setIsLoading(true)
-
     try {
       const result = await login(email, password, selectedRole)
       setIsLoading(false)
-
       if (result.success) {
-        // Role-based redirection logic
-        if (result.user.role === 'super-admin' || result.user.role === 'admin') {
-          navigate('/admin/dashboard')
-        } else if (result.user.role === 'shop-owner' || result.user.role === 'owner') {
-          navigate('/owner/dashboard')
-        } else {
-          navigate('/user/dashboard')
-        }
+        if (result.user.role === 'super-admin' || result.user.role === 'admin') navigate('/admin/dashboard')
+        else if (result.user.role === 'shop-owner' || result.user.role === 'owner') navigate('/owner/dashboard')
+        else navigate('/user/dashboard')
       } else {
         setErrorMessage(result.error)
       }
@@ -76,216 +53,123 @@ function LoginPage() {
     }
   }
 
+  const inputClass = "w-full h-11 bg-[#1c2028] border border-[#3b494b]/50 focus:border-[#00f0ff]/60 focus:ring-1 focus:ring-[#00f0ff]/20 focus:outline-none rounded-xl px-4 text-[14px] text-[#dfe2ee] placeholder-[#3b494b] transition-all"
+  const labelClass = "block text-[11px] font-bold text-[#b9cacb] uppercase tracking-widest mb-1"
+
   return (
     <AuthLayout>
-      <div className="space-y-6">
-        
+      <div className="space-y-5">
+
         {/* Header */}
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-[28px] font-bold text-[#dfe2ee] tracking-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
             Welcome Back
           </h1>
-          <p className="text-slate-500 text-sm">
-            Sign in to continue to your DroneHub account.
-          </p>
+          <p className="text-[13px] text-[#849495]">Sign in to continue to your DroneHub account.</p>
         </div>
 
-        {/* ROLE SELECTION SEGMENTED CONTROL */}
+        {/* Role Selector */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Login As
-          </label>
-          <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
-            
-            {/* Customer Option */}
-            <button
-              type="button"
-              onClick={() => setSelectedRole('customer')}
-              className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedRole === 'customer'
-                  ? 'bg-white text-blue-600 shadow-sm border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <User className="w-4 h-4" />
-              <span>Customer</span>
-            </button>
-
-            {/* Shop Owner Option */}
-            <button
-              type="button"
-              onClick={() => setSelectedRole('shop-owner')}
-              className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedRole === 'shop-owner'
-                  ? 'bg-white text-blue-600 shadow-sm border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Store className="w-4 h-4" />
-              <span>Shop Owner</span>
-            </button>
-
-            {/* Super Admin Option */}
-            <button
-              type="button"
-              onClick={() => setSelectedRole('super-admin')}
-              className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedRole === 'super-admin'
-                  ? 'bg-white text-blue-600 shadow-sm border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Super Admin</span>
-            </button>
-
+          <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Login As</label>
+          <div className="grid grid-cols-3 gap-2 bg-[#0a0e16] border border-[#3b494b]/40 p-1.5 rounded-2xl">
+            {[
+              { role: 'customer', icon: 'person', label: 'Customer' },
+              { role: 'shop-owner', icon: 'storefront', label: 'Shop Owner' },
+              { role: 'super-admin', icon: 'admin_panel_settings', label: 'Admin' },
+            ].map(({ role, icon, label }) => (
+              <button
+                key={role}
+                type="button"
+                onClick={() => setSelectedRole(role)}
+                className={`flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
+                  selectedRole === role
+                    ? 'bg-[#00f0ff] text-[#002022] shadow-[0_0_16px_rgba(0,240,255,0.3)]'
+                    : 'text-[#849495] hover:text-[#dfe2ee] hover:bg-[#1c2028]'
+                }`}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '15px', fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                <span>{label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* ERROR MESSAGE DISPLAY */}
+        {/* Error */}
         {errorMessage && (
-          <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+          <div className="p-3.5 bg-[#93000a]/20 border border-[#ffb4ab]/30 text-[#ffb4ab] rounded-2xl text-[12px] font-semibold flex items-center gap-2">
+            <span className="material-symbols-outlined shrink-0" style={{ fontSize: '16px' }}>error</span>
             <span>{errorMessage}</span>
           </div>
         )}
 
-        {/* LOGIN FORM */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Email Input */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Email Address
-            </label>
+
+          <div>
+            <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Email Address</label>
             <div className="relative">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-3 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                required
-              />
-              <Mail className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className={`${inputClass} pr-10`} required />
+              <span className="material-symbols-outlined text-[#849495] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: '16px' }}>mail</span>
             </div>
           </div>
 
-          {/* Password Input with Show/Hide Toggle */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Password
-            </label>
+          <div>
+            <label className={labelClass} style={{ fontFamily: 'JetBrains Mono, monospace' }}>Password</label>
             <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:bg-white focus:outline-none rounded-xl py-3 pl-4 pr-10 text-sm text-slate-800 font-medium transition-all"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
-                aria-label={showPassword ? 'Hide Password' : 'Show Password'}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              <input type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} className={`${inputClass} pr-10`} required />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#849495] hover:text-[#00f0ff] cursor-pointer transition-colors">
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>{showPassword ? 'visibility_off' : 'visibility'}</span>
               </button>
             </div>
           </div>
 
-          {/* Remember Me & Forgot Password Row */}
-          <div className="flex items-center justify-between text-xs pt-1">
-            <label className="flex items-center gap-2 cursor-pointer font-medium text-slate-700 select-none">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-              />
+          <div className="flex items-center justify-between text-[12px] pt-1">
+            <label className="flex items-center gap-2 cursor-pointer text-[#849495] select-none">
+              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="w-4 h-4 rounded accent-[#00f0ff] bg-[#1c2028]" />
               <span>Remember me</span>
             </label>
-
-            <Link
-              to="/auth/forgot-password"
-              className="font-bold text-blue-600 hover:text-blue-700 hover:underline"
-            >
-              Forgot Password?
-            </Link>
+            <Link to="/auth/forgot-password" className="font-semibold text-[#00f0ff] hover:text-[#7df4ff] transition-colors">Forgot Password?</Link>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm shadow-md shadow-blue-500/25 hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-full bg-[#00f0ff] text-[#002022] font-bold text-[14px] transition-all hover:bg-[#7df4ff] glow-primary active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isLoading ? (
-              <span>Signing you in...</span>
+              <><span className="material-symbols-outlined animate-spin" style={{ fontSize: '18px' }}>progress_activity</span><span>Signing in...</span></>
             ) : (
-              <>
-                <span>Sign In</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
+              <><span>Sign In</span><span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span></>
             )}
           </button>
-
         </form>
 
-        {/* DEMO CREDENTIALS HELPER BOX FOR COLLEGE EVALUATOR */}
-        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/90 space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Demo Test Credentials (1-Click Fill)</span>
+        {/* Demo credentials */}
+        <div className="p-4 bg-[#1c2028] border border-[#00f0ff]/15 rounded-2xl space-y-2">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#b9cacb]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            <span className="material-symbols-outlined text-[#00f0ff]" style={{ fontSize: '13px', fontVariationSettings: "'FILL' 1" }}>bolt</span>
+            Demo Test Credentials (1-Click Fill)
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-            <button
-              type="button"
-              onClick={() => handleQuickFill('customer', 'user@dronehub.com', 'user123')}
-              className="p-2 bg-white hover:bg-blue-50 border border-slate-200 rounded-xl text-left transition-colors cursor-pointer"
-            >
-              <div className="font-bold text-blue-600">Customer</div>
-              <div className="text-slate-500 text-[10px] truncate">user@dronehub.com</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickFill('shop-owner', 'owner@dronehub.com', 'owner123')}
-              className="p-2 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl text-left transition-colors cursor-pointer"
-            >
-              <div className="font-bold text-purple-600">Owner 101</div>
-              <div className="text-slate-500 text-[10px] truncate">SkyRent (101)</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickFill('shop-owner', 'owner2@dronehub.com', 'owner123')}
-              className="p-2 bg-white hover:bg-purple-50 border border-slate-200 rounded-xl text-left transition-colors cursor-pointer"
-            >
-              <div className="font-bold text-purple-600">Owner 102</div>
-              <div className="text-slate-500 text-[10px] truncate">AeroTech (102)</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickFill('super-admin', 'admin@dronehub.com', 'admin123')}
-              className="p-2 bg-white hover:bg-emerald-50 border border-slate-200 rounded-xl text-left transition-colors cursor-pointer"
-            >
-              <div className="font-bold text-emerald-600">Super Admin</div>
-              <div className="text-slate-500 text-[10px] truncate">admin@dronehub.com</div>
-            </button>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { role: 'customer', email: 'user@dronehub.com', pass: 'user123', label: 'Customer', sub: 'user@dronehub.com', color: '#00f0ff' },
+              { role: 'shop-owner', email: 'owner@dronehub.com', pass: 'owner123', label: 'Owner 101', sub: 'SkyRent (101)', color: '#aac7ff' },
+              { role: 'shop-owner', email: 'owner2@dronehub.com', pass: 'owner123', label: 'Owner 102', sub: 'AeroTech (102)', color: '#aac7ff' },
+              { role: 'super-admin', email: 'admin@dronehub.com', pass: 'admin123', label: 'Super Admin', sub: 'admin@dronehub.com', color: '#4ae176' },
+            ].map(({ role, email: e, pass, label, sub, color }) => (
+              <button key={label} type="button" onClick={() => handleQuickFill(role, e, pass)}
+                className="p-2 bg-[#262a33] hover:bg-[#31353e] border border-[#3b494b]/40 rounded-xl text-left transition-colors cursor-pointer">
+                <div className="text-[11px] font-bold" style={{ color, fontFamily: 'JetBrains Mono, monospace' }}>{label}</div>
+                <div className="text-[10px] text-[#849495] truncate">{sub}</div>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Bottom Footer: Register Link */}
-        <div className="text-center text-xs text-slate-600 pt-2 border-t border-slate-100">
+        {/* Footer */}
+        <div className="text-center text-[12px] text-[#849495] pt-2 border-t border-[#3b494b]/30">
           Don't have an account?{' '}
-          <Link to="/auth/register" className="font-bold text-blue-600 hover:text-blue-700">
-            Create an Account
-          </Link>
+          <Link to="/auth/register" className="font-bold text-[#00f0ff] hover:text-[#7df4ff] transition-colors">Create an Account</Link>
         </div>
 
       </div>

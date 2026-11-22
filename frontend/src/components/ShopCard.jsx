@@ -1,69 +1,74 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, Star, Navigation, CheckCircle2, ArrowRight } from 'lucide-react'
 
-// ShopCard Component: Reusable card for displaying rental shops
 function ShopCard({ shop }) {
+  const coverImage =
+    shop.coverImage ||
+    shop.image ||
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80'
+
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
-      
-      {/* Shop Banner Image */}
-      <div className="relative h-40 bg-slate-100 overflow-hidden">
+    <article className="flex flex-col bg-[#181c24] border border-[#3b494b]/40 hover:border-[#00f0ff]/30 rounded-2xl overflow-hidden shadow-md hover:shadow-[0_4px_20px_rgba(0,240,255,0.06)] transition-all duration-300 group">
+
+      {/* Cover image */}
+      <div className="relative h-32 bg-[#1c2028] overflow-hidden">
         <img
-          src={shop.image}
+          src={coverImage}
           alt={shop.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70"
           loading="lazy"
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80'
+          }}
         />
-        {shop.verified && (
-          <div className="absolute top-3 left-3 bg-emerald-500/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 shadow-xs">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Verified Shop</span>
-          </div>
-        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#181c24] via-transparent to-transparent" />
+
+        {/* Rating */}
+        <div
+          className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold"
+          style={{ background: 'rgba(10,14,22,0.85)', color: '#aac7ff', border: '1px solid rgba(170,199,255,0.2)', backdropFilter: 'blur(8px)' }}
+        >
+          <span className="material-symbols-outlined text-[#aac7ff]" style={{ fontSize: '12px', fontVariationSettings: "'FILL' 1" }}>star</span>
+          {shop.rating}
+        </div>
       </div>
 
-      {/* Shop Info Content */}
-      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+      {/* Body */}
+      <div className="p-4 flex flex-col flex-1 gap-3">
         <div>
-          <div className="flex justify-between items-start">
-            <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-              {shop.name}
-            </h3>
-            <div className="flex items-center gap-1 text-sm font-semibold text-slate-800 shrink-0">
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span>{shop.rating}</span>
-            </div>
+          <h3
+            className="text-[14px] font-semibold text-[#dfe2ee] group-hover:text-[#00f0ff] transition-colors line-clamp-1"
+            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+          >
+            {shop.name}
+          </h3>
+          <div className="flex items-center gap-1 mt-1">
+            <span className="material-symbols-outlined text-[#849495]" style={{ fontSize: '13px' }}>location_on</span>
+            <span className="text-[11px] text-[#849495]">{shop.location}</span>
           </div>
-
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
-            <MapPin className="w-3.5 h-3.5 text-slate-400" />
-            <span>{shop.location}</span>
-          </div>
-
-          <p className="text-sm text-slate-600 mt-3 line-clamp-2 leading-relaxed">
-            {shop.description}
-          </p>
         </div>
 
-        {/* Footer Details & Explore Button */}
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">
-            <Navigation className="w-3.5 h-3.5" />
-            <span>{shop.availableDrones} Drones Available</span>
-          </div>
+        <p className="text-[12px] text-[#849495] line-clamp-2 leading-relaxed">{shop.description}</p>
 
+        <div className="flex items-center justify-between pt-2 border-t border-[#3b494b]/20">
+          <span
+            className="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#00f0ff]/10 text-[#00f0ff] border border-[#00f0ff]/20"
+            style={{ fontFamily: 'JetBrains Mono, monospace' }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>flight_takeoff</span>
+            {shop.availableDrones} Drones
+          </span>
           <Link
             to="/drones"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors"
+            className="flex items-center gap-1 text-[12px] text-[#b9cacb] hover:text-[#00f0ff] transition-colors font-semibold"
+            onClick={(e) => e.stopPropagation()}
           >
-            <span>Explore</span>
-            <ArrowRight className="w-4 h-4" />
+            Explore
+            <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>arrow_forward</span>
           </Link>
         </div>
       </div>
-
-    </div>
+    </article>
   )
 }
 

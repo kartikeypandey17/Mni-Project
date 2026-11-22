@@ -208,21 +208,21 @@ function DroneMarketplace() {
   }, [filteredAndSortedDrones, visibleCount])
 
   return (
-    <div className="space-y-10 pb-24 pt-6">
-      
+    <div className="space-y-10 pb-24 pt-6 bg-[#050508]">
+
       {/* 1. PAGE HEADER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3.5 py-1 rounded-full text-xs font-bold border border-blue-100">
-            <Sparkles className="w-4 h-4 text-blue-600" />
+          <div className="inline-flex items-center gap-2 bg-purple-900/30 border border-purple-500/30 text-purple-300 px-4 py-1.5 rounded-full text-xs font-bold">
+            <Sparkles className="w-4 h-4 text-cyan-400" />
             <span>Multi-Shop Drone Marketplace</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            Explore Drones
+          <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+            Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Drones</span>
           </h1>
 
-          <p className="text-slate-600 text-base sm:text-lg">
+          <p className="text-slate-400 text-base sm:text-lg">
             Find the perfect drone for photography, agriculture, surveying, filmmaking, and more.
           </p>
         </div>
@@ -236,7 +236,7 @@ function DroneMarketplace() {
       {/* 2. MAIN MARKETPLACE CONTENT */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Desktop Filter Sidebar (Hidden on mobile) */}
           <aside className="hidden lg:block lg:col-span-3 sticky top-24">
             <FilterSidebar
@@ -249,29 +249,29 @@ function DroneMarketplace() {
 
           {/* Main Results Column */}
           <main className="lg:col-span-9 space-y-6">
-            
+
             {/* Results Control Header Bar */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-4">
-              
+            <div className="bg-black/60 border border-purple-500/20 backdrop-blur-sm p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+
               {/* Results Count & Mobile Filter Trigger */}
               <div className="flex items-center gap-3">
-                
+
                 {/* Mobile Filter Button */}
                 <button
                   onClick={() => setIsMobileDrawerOpen(true)}
-                  className="lg:hidden inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-slate-200 transition-colors cursor-pointer"
+                  className="lg:hidden inline-flex items-center gap-2 bg-purple-900/20 hover:bg-purple-900/40 text-slate-300 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-purple-500/20 transition-colors cursor-pointer"
                 >
-                  <SlidersHorizontal className="w-4 h-4 text-blue-600" />
+                  <SlidersHorizontal className="w-4 h-4 text-purple-400" />
                   <span>Filters</span>
                   {activeFiltersCount > 0 && (
-                    <span className="bg-blue-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-extrabold">
+                    <span className="bg-purple-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-extrabold">
                       {activeFiltersCount}
                     </span>
                   )}
                 </button>
 
-                <div className="text-sm font-extrabold text-slate-900">
-                  Showing <span className="text-blue-600">{filteredAndSortedDrones.length}</span> drones
+                <div className="text-sm font-extrabold text-white">
+                  Showing <span className="text-cyan-400">{filteredAndSortedDrones.length}</span> drones
                 </div>
 
               </div>
@@ -318,9 +318,9 @@ function DroneMarketplace() {
                   <div className="pt-8 text-center">
                     <button
                       onClick={() => setVisibleCount((prev) => prev + 6)}
-                      className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold px-8 py-3.5 rounded-xl border border-slate-300 shadow-2xs hover:shadow-md transition-all cursor-pointer text-sm"
+                      className="inline-flex items-center gap-2 bg-black/60 hover:bg-purple-900/20 text-slate-300 hover:text-purple-400 font-bold px-8 py-3.5 rounded-xl border border-purple-500/30 hover:border-purple-400/50 transition-all cursor-pointer text-sm backdrop-blur-sm"
                     >
-                      <RefreshCw className="w-4 h-4 text-blue-600" />
+                      <RefreshCw className="w-4 h-4 text-cyan-400" />
                       <span>Load More Drones ({filteredAndSortedDrones.length - visibleCount} remaining)</span>
                     </button>
                   </div>

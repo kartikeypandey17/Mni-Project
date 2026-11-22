@@ -1,170 +1,154 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Camera, Clock, Star, MapPin, Store, Navigation, Heart, ArrowRight } from 'lucide-react'
 
-// DroneCard Component: Grid View item displaying drone details and rental actions
 function DroneCard({ drone, isWishlisted, onToggleWishlist }) {
   const navigate = useNavigate()
 
-  // Format availability badge styles
-  const getBadgeStyle = (availability) => {
-    switch (availability) {
-      case 'Available':
-        return 'bg-emerald-500/90 text-white'
-      case 'Currently Rented':
-        return 'bg-amber-500/90 text-white'
-      case 'Maintenance':
-        return 'bg-rose-500/90 text-white'
-      default:
-        return 'bg-slate-700 text-white'
-    }
+  const availConfig = {
+    'Available': { label: 'Available', icon: 'check_circle', color: '#4ae176', bg: 'rgba(74,225,118,0.12)', border: 'rgba(74,225,118,0.3)' },
+    'Currently Rented': { label: 'In Flight', icon: 'flight', color: '#00f0ff', bg: 'rgba(0,240,255,0.1)', border: 'rgba(0,240,255,0.3)' },
+    'Maintenance': { label: 'Maintenance', icon: 'build', color: '#ffb4ab', bg: 'rgba(255,180,171,0.1)', border: 'rgba(255,180,171,0.3)' },
   }
+  const avail = availConfig[drone.availability] || availConfig['Available']
 
   const handleWishlistClick = (e) => {
     e.stopPropagation()
-    if (onToggleWishlist) {
-      onToggleWishlist(drone)
-    }
+    if (onToggleWishlist) onToggleWishlist(drone)
   }
 
+  const price = drone.price || drone.pricePerDay || 0
+  const rating = drone.rating || 0
+  const reviews = drone.reviews || drone.reviewsCount || 0
+  const flightTime = drone.flightTime || '—'
+  const camera = drone.camera || '—'
+  const city = drone.location?.city || drone.location || ''
+
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
-      
-      {/* Image Container with Badges */}
-      <div 
-        onClick={() => navigate(`/drones/${drone.id}`)}
-        className="relative h-52 bg-slate-100 overflow-hidden cursor-pointer"
-      >
+    <article
+      className="relative flex flex-col bg-[#181c24] border border-[#3b494b]/40 hover:border-[#00f0ff]/40 rounded-2xl overflow-hidden shadow-md hover:shadow-[0_4px_24px_rgba(0,240,255,0.08)] transition-all duration-300 group cursor-pointer"
+      onClick={() => navigate(`/drones/${drone.id}`)}
+    >
+      {/* Image */}
+      <div className="relative h-48 bg-[#1c2028] overflow-hidden flex-shrink-0">
         <img
           src={drone.image}
           alt={drone.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&q=80'
+          }}
         />
-        
-        {/* Brand Badge */}
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 border border-white/40 shadow-xs">
+
+        {/* Brand badge */}
+        <div
+          className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+          style={{ fontFamily: 'JetBrains Mono, monospace', background: 'rgba(10,14,22,0.85)', color: '#dfe2ee', border: '1px solid rgba(59,73,75,0.5)', backdropFilter: 'blur(8px)' }}
+        >
           {drone.brand}
         </div>
 
-        {/* Availability Badge */}
-        <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold shadow-xs ${getBadgeStyle(drone.availability)}`}>
-          {drone.availability}
+        {/* Availability badge */}
+        <div
+          className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
+          style={{ fontFamily: 'JetBrains Mono, monospace', color: avail.color, background: avail.bg, border: `1px solid ${avail.border}`, backdropFilter: 'blur(8px)' }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '11px', fontVariationSettings: "'FILL' 1" }}>{avail.icon}</span>
+          {avail.label}
         </div>
 
-        {/* Wishlist Heart Button */}
+        {/* Category badge on image bottom */}
+        {drone.badge && (
+          <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00f0ff]/20 text-[#00f0ff] border border-[#00f0ff]/30" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            {drone.badge}
+          </div>
+        )}
+
+        {/* Wishlist */}
         <button
           onClick={handleWishlistClick}
-          aria-label="Add to Wishlist"
-          className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-xs hover:bg-white text-slate-700 flex items-center justify-center shadow-md transition-transform active:scale-90 cursor-pointer z-10"
+          className="absolute bottom-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90 z-10"
+          style={{ background: 'rgba(10,14,22,0.85)', border: '1px solid rgba(59,73,75,0.5)', backdropFilter: 'blur(8px)' }}
+          aria-label="Wishlist"
         >
-          <Heart
-            className={`w-5 h-5 transition-colors ${
-              isWishlisted ? 'text-rose-500 fill-rose-500' : 'text-slate-400 hover:text-rose-500'
-            }`}
-          />
+          <span
+            className="material-symbols-outlined transition-colors"
+            style={{
+              fontSize: '16px',
+              color: isWishlisted ? '#ffb4ab' : '#849495',
+              fontVariationSettings: isWishlisted ? "'FILL' 1" : "'FILL' 0",
+            }}
+          >
+            favorite
+          </span>
         </button>
       </div>
 
-      {/* Content Body */}
-      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-        
-        <div className="space-y-2">
-          {/* Category & Model */}
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md">
-              {drone.category}
-            </span>
-            <span className="text-slate-400 font-medium truncate max-w-[120px]">
-              {drone.model}
-            </span>
-          </div>
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-1 gap-3">
 
-          {/* Drone Name */}
-          <h3 
-            onClick={() => navigate(`/drones/${drone.id}`)}
-            className="text-lg font-bold text-slate-900 line-clamp-1 group-hover:text-blue-600 transition-colors cursor-pointer"
+        {/* Category + Model */}
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#00f0ff]/10 text-[#00f0ff] border border-[#00f0ff]/20"
+            style={{ fontFamily: 'JetBrains Mono, monospace' }}
+          >
+            {drone.category}
+          </span>
+          <span className="text-[11px] text-[#849495] truncate max-w-[100px]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+            {drone.model}
+          </span>
+        </div>
+
+        {/* Name + Rating */}
+        <div>
+          <h3
+            className="text-[15px] font-semibold text-[#dfe2ee] group-hover:text-[#00f0ff] transition-colors line-clamp-1 leading-snug"
+            style={{ fontFamily: 'Space Grotesk, sans-serif' }}
           >
             {drone.name}
           </h3>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 text-xs text-slate-600">
-            <div className="flex items-center gap-1 font-bold text-slate-800">
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span>{drone.rating}</span>
-            </div>
-            <span className="text-slate-400">({drone.reviews} reviews)</span>
-          </div>
-
-          {/* Specifications */}
-          <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
-            <div className="flex items-center gap-1.5">
-              <Camera className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="truncate">{drone.camera}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span>{drone.flightTime} mins</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Navigation className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span>GPS {drone.gps ? 'Enabled' : 'No'}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="truncate">{drone.location}</span>
-            </div>
-          </div>
-
-          {/* Shop Owner Info */}
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 pt-1">
-            <Store className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span className="truncate font-medium">{drone.shopName}</span>
+          <div className="flex items-center gap-1 mt-1">
+            <span className="material-symbols-outlined text-[#aac7ff]" style={{ fontSize: '13px', fontVariationSettings: "'FILL' 1" }}>star</span>
+            <span className="text-[12px] font-semibold text-[#dfe2ee]">{rating}</span>
+            <span className="text-[11px] text-[#849495]">({reviews} reviews)</span>
           </div>
         </div>
 
-        {/* Pricing & Actions Footer */}
-        <div className="pt-3 border-t border-slate-100 space-y-3">
-          
-          <div className="flex items-end justify-between">
-            <div>
-              <span className="text-xs text-slate-400 block font-normal">Security Deposit: ₹{drone.securityDeposit ? drone.securityDeposit.toLocaleString('en-IN') : '10,000'}</span>
-              <div className="text-xl font-black text-slate-900">
-                ₹{drone.pricePerDay ? drone.pricePerDay.toLocaleString('en-IN') : '2,500'} <span className="text-xs font-semibold text-slate-500">/day</span>
-              </div>
+        {/* Specs */}
+        <div className="grid grid-cols-2 gap-1.5 py-2.5 border-t border-[#3b494b]/30">
+          {[
+            { icon: 'photo_camera', label: camera },
+            { icon: 'battery_full', label: `${flightTime} min` },
+            { icon: 'sensors', label: `GPS ${drone.gps ? 'On' : 'Off'}` },
+            { icon: 'location_on', label: city || 'On-site' },
+          ].map(({ icon, label }, i) => (
+            <div key={i} className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[#849495]" style={{ fontSize: '13px' }}>{icon}</span>
+              <span className="text-[11px] text-[#b9cacb] truncate">{label}</span>
             </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => navigate(`/drones/${drone.id}`)}
-              className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-xs transition-colors cursor-pointer"
-            >
-              View Details
-            </button>
-            <button
-              onClick={() => navigate(`/booking/${drone.id}`)}
-              disabled={drone.availability !== 'Available'}
-              className={`w-full font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer ${
-                drone.availability === 'Available'
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-              }`}
-            >
-              <span>Rent Now</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
+          ))}
         </div>
 
+        {/* Price + CTA */}
+        <div className="flex items-center justify-between pt-1 border-t border-[#3b494b]/20">
+          <div>
+            <span className="text-[20px] font-bold text-[#00f0ff] text-glow-primary" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              ${price}
+            </span>
+            <span className="text-[11px] text-[#849495]" style={{ fontFamily: 'JetBrains Mono, monospace' }}> /day</span>
+          </div>
+          <button
+            className="flex items-center gap-1 h-8 px-3 rounded-full bg-[#00f0ff]/10 hover:bg-[#00f0ff] border border-[#00f0ff]/30 hover:border-[#00f0ff] text-[#00f0ff] hover:text-[#002022] text-[12px] font-bold transition-all active:scale-95 cursor-pointer"
+            onClick={(e) => { e.stopPropagation(); navigate(`/drones/${drone.id}`) }}
+          >
+            Book
+            <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>arrow_forward</span>
+          </button>
+        </div>
       </div>
-
-    </div>
+    </article>
   )
 }
 
 export default DroneCard
-
