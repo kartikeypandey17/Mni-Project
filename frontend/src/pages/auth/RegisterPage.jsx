@@ -109,11 +109,10 @@ function RegisterPage() {
                 key={r}
                 type="button"
                 onClick={() => setRole(r)}
-                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
-                  role === r
-                    ? 'border-[#00f0ff]/60 bg-[#00f0ff]/8 shadow-[0_0_20px_rgba(0,240,255,0.1)]'
-                    : 'border-[#3b494b]/40 bg-[#1c2028] hover:border-[#3b494b]/70'
-                }`}
+                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${role === r
+                  ? 'border-[#00f0ff]/60 bg-[#00f0ff]/8 shadow-[0_0_20px_rgba(0,240,255,0.1)]'
+                  : 'border-[#3b494b]/40 bg-[#1c2028] hover:border-[#3b494b]/70'
+                  }`}
               >
                 <div className="flex items-center gap-2 text-[13px] font-semibold text-[#dfe2ee]">
                   <span className="material-symbols-outlined" style={{ fontSize: '16px', color, fontVariationSettings: "'FILL' 1" }}>{icon}</span>
